@@ -3,6 +3,7 @@ const connectDB = require('./config/db');
 const morgan = require('morgan');
 const mainRoutes = require('./routes/mainRoutes');
 const userRoutes = require('./routes/userRoutes');
+const vaultRoutes = require('./routes/vaulRoutes');  // Import vault routes
 const errorHandler = require('./middlewares/errorHandler');
 
 
@@ -21,9 +22,8 @@ app.use(morgan('tiny'));
 // Routes
 
 app.use('/', mainRoutes);
-
-
 app.use('/api/users', userRoutes);
+app.use('/api/vault', vaultRoutes);  // Add the vault routes
 
 // Error Handling Middleware
 app.use(errorHandler);
