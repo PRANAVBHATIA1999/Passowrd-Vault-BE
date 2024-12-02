@@ -21,32 +21,30 @@ const getUsers = async (req, res) => {
 };
 
 const registerUser = asyncHandler(async (req, res) => {
-
-  console.log("Reached Register USer Controller --", req.body);
-
-  const { name, email, password } = req.body;
+  const { name, email, password, userType } = req.body;
 
   if (!name || !email || !password) {
     res.status(400);
-    throw new Error("Please add all fields");
+    throw new Error('Please add all fields');
   }
 
-  // check if user exists
+  // Check if user already exists
   const userExists = await User.findOne({ email });
   if (userExists) {
     res.status(400);
-    throw new Error("User already exists");
+    throw new Error('User already exists');
   }
 
-  // create hash password
+  // Hash password
   const salt = await bcrypt.genSalt(10);
   const hashedPassword = await bcrypt.hash(password, salt);
 
-  // create user
+  // Create the user
   const user = await User.create({
     name,
     email,
     password: hashedPassword,
+    userType: userType || 'employee', // Default to 'employee' if no type is provided
   });
 
   if (user) {
@@ -54,11 +52,12 @@ const registerUser = asyncHandler(async (req, res) => {
       _id: user.id,
       name: user.name,
       email: user.email,
+      userType: user.userType, // Return the userType in the response
       token: generateToken(user._id),
     });
   } else {
     res.status(400);
-    throw new Error("Invalid user data");
+    throw new Error('Invalid user data');
   }
 });
 
@@ -78,6 +77,7 @@ const loginUser = asyncHandler(async (req, res) => {
       _id: user.id,
       name: user.name,
       email: user.email,
+      userType: user.userType,  // Send userType in the response
       token: generateToken(user._id),
     });
   } else {

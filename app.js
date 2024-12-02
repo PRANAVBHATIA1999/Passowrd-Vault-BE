@@ -5,6 +5,7 @@ const mainRoutes = require('./routes/mainRoutes');
 const userRoutes = require('./routes/userRoutes');
 const vaultRoutes = require('./routes/vaulRoutes');  // Import vault routes
 const errorHandler = require('./middlewares/errorHandler');
+const cors = require('cors');
 
 
 require('dotenv').config();
@@ -17,6 +18,8 @@ connectDB();
 // Middleware
 app.use(express.json());
 app.use(morgan('tiny'));
+app.use(cors());
+
 
 
 // Routes
